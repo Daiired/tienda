@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tienda</title>
+
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'app/css/estilos.css'%}">
+</head>
+<body>
+<header id="header">
+    
+    <div>
+        <!-- <nav id="nav">
+            <ul>
+                <li>
+                    <a href="{% url 'home' %}">Inicio</a>
+                </li>
+                <li>
+                    <a href="{% url 'contacto' %}">Contácto</a>
+                </li>
+                <li>
+                    <a href="{% url 'galeria' %}">Galería</a>
+                </li>
+                <li>
+                    <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
+                </li>
+                <li>
+                    <a href="{% url 'listar_alimentos' %}">Listar Alimentos</a>
+                </li>
+
+                
+
+
+                {% if perms.app.add_producto %}
+                <li>
+                    <a href="{% url 'agregar_producto' %}">Agregar producto</a>
+                </li>
+                {% endif %}
+                {% if perms.app.view_producto %}
+                <li>
+                    <a href="{% url 'listar_productos' %}">Listar producto</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li>
+                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                    <a href="#" onclick="document.getElementById('logout-form').submit();">Cerrar sesión</a>
+                </li>
+                <li>
+                    <a href="#">@{{user.username}}</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{% url 'login' %}">Iniciar Sesión</a>
+                </li>
+                <li>
+                    <a href="{% url 'registro' %}">Registrate</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav> -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Navbar</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Menu
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
+                      {% if perms.app.add_alimento %}
+                      <li><a class="dropdown-item" href="{% url 'agregar_alimento' %}">Agregar Alimento</a></li>
+                      {% endif %}
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  </li>
+                </ul>
+                <form class="d-flex">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+              </div>
+            </div>
+          </nav>
+    </div>
+</header>
+<div id="contenido">
+    {% if user.is_staff %}
+        <!-- Alimento             -->
+            {% if perms.app.add_alimento %}
+            <li>
+                <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_alimento %}
+            <li>
+                <a href="{% url 'listar_alimentos' %}">Listar Alimentos</a>
+            </li>
+            {% endif %}
+        <!-- Categoria Alimento            -->
+            {% if perms.app.add_categoria_alimento %}
+            <li>
+                <a href="{% url 'agregar_categoria' %}">Agregar Categoria Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_categoria_alimento %}
+            <li>
+                <a href="{% url 'listar_categorias' %}">Listar Categorias Alimentos</a>
+            </li>
+            {% endif %}
+
+        <!-- Dieta             -->
+            {% if perms.app.add_dieta %}
+            <li>
+                <a href="{% url 'agregar_dieta' %}">Agregar Dieta</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_dieta %}
+            <li>
+                <a href="{% url 'listar_dietas' %}">Listar Dietas</a>
+            </li>
+            {% endif %}
+
+        <!-- Libre de Alimento            -->
+            {% if perms.app.add_libre_de_alimento %}
+            <li>
+                <a href="{% url 'agregar_libre' %}">Agregar Libre de Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_libre_de_alimento %}
+            <li>
+                <a href="{% url 'listar_libres' %}">Listar Libre de Alimentos</a>
+            </li>
+            {% endif %}
+
+        <!-- Alimento-Dieta Relacion           -->
+            {% if perms.app.add_alimento_dieta %}
+            <li>
+                <a href="{% url 'agregar_alimentodieta' %}">Agregar Relación Alimento-Dieta</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_alimento_dieta %}
+            <li>
+                <a href="{% url 'listar_alimentodietas' %}">Listar Relaciones Alimento-Dietas</a>
+            </li>
+            {% endif %}
+    {% else %}
+
+            
+
+    {% endif %}
+
+    {% block contenido %}
+    {% endblock %}
+</div>
+<footer>
+    <footer>
+        <div class="marcas">
+            <img src="{% static 'app/img/footer/apple.png' %}" alt="apple" style="width: 30px;">
+            <img src="{% static 'app/img/footer/lenovo.png' %}" alt="lenovo">
+            <img src="{% static 'app/img/footer/microsoft.png' %}" alt="microsoft">
+            <img src="{% static 'app/img/footer/samsung.png' %}" alt="samsung">
+            <img src="{% static 'app/img/footer/xiaomi.png' %}" alt="xiaomi">
+        </div>
+        <div class="logo_footer">
+            <img src="{% static 'app/img/tecnomarketpngicono.png' %}" alt="logo">
+        </div>
+    </footer>
+</footer>
+<script src="{% static 'app/js/menu.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+{% if messages %}
+    {% for m in messages %}
+        <script>
+            Swal.fire({
+                "title": "Felicitaciones",
+                "text": "{{m}}",
+                "icon": "success"
+            })
+        </script>
+    {% endfor %}
+{% endif %}
+
+{% block js %}
+{% endblock %}
+</body>
+</html>

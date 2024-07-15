@@ -1,0 +1,4 @@
+django == 4.2.14
+pillow
+django-admin-interface
+django-crispy-forms
