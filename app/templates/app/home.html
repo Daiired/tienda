@@ -7,27 +7,74 @@
 {% endblock %}
 
 {% block css %}
-
+<style>
+    .filtro {
+        margin-bottom: 10px;
+    }
+</style>
 {% endblock %}
-
 {% block contenido %}
 
 {% load humanize %}
+<!-- Formulario para filtrar por categoría, dieta y libre de alimento -->
+<form method="GET" class="filtro">
+    <label for="categoria">Filtrar por categoría:</label>
+    <select name="categoria" id="categoria">
+        <option value="">Todas las categorías</option>
+        {% for categoria in categorias %}
+        <option value="{{ categoria.id }}" {% if categoria.id == categoria_seleccionada %}selected{% endif %}>
+            {{ categoria.nombre }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filtrar</button>
+</form>
+
+<form method="GET" class="filtro">
+    <fieldset>
+        <legend>Filtrar por dieta:</legend>
+        {% for dieta in dietas %}
+        <input type="checkbox" id="dieta_{{ dieta.id }}" name="dieta" value="{{ dieta.id }}"
+               {% if dieta.id in dietas_seleccionadas %}checked{% endif %}>
+        <label for="dieta_{{ dieta.id }}">{{ dieta.nombre }}</label><br>
+        {% endfor %}
+    </fieldset>
+    <button type="submit">Filtrar</button>
+</form>
+
+<form method="GET" class="filtro">
+    <fieldset>
+        <legend>Filtrar por alimentos libres:</legend>
+        {% for libre_alimento in libres_alimentos %}
+        <input type="checkbox" id="libre_alimento_{{ libre_alimento.id }}" name="libre_alimento"
+               value="{{ libre_alimento.id }}"
+               {% if libre_alimento.id in alimentos_libres_seleccionados %}checked{% endif %}>
+        <label for="libre_alimento_{{ libre_alimento.id }}">{{ libre_alimento.nombre }}</label><br>
+        {% endfor %}
+    </fieldset>
+    <button type="submit">Filtrar</button>
+</form>
+
+<h2>Alimentos</h2>
 <div class="productos">
 
-    {% for p in productos %}
+    {% for a in productos %}
 
     <div class="producto">
         <div class="contenedor">
-            {% if p.imagen %}
-            <img src="{{ p.imagen.url }}" alt="imagen producto">
+            
+            {% if a.imagen %}
+            <a href="{% url 'detalle' a.id %}">
+                <img src="{{ a.imagen.url }}" alt="imagen alimento">
+            </a>
             {% endif %}
         </div>
 
         <div class="detalles">
-            <h5>{{ p.marca | capfirst }}</h5>
-            <h2>{{ p.nombre | title}}</h2>
-            <h3>${{ p.precio | intcomma}}</h3>
+            <a href="{% url 'detalle' a.id %}">
+                <h2>{{ a.nombre_alimento | title }}</h2>
+            </a>
+            <h3>${{ a.precio | intcomma}}</h3>
         </div>
     </div>
 

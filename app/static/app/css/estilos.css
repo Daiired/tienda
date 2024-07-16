@@ -260,3 +260,11 @@ input.error {
 
 }
 
+.grafico-nutricional {
+    max-width: 300px;
+    margin: 0 auto;
+}
+#nutritionChart {
+    width: 100% !important;
+    height: auto !important;
+}

@@ -44,6 +44,11 @@ class AlimentoLibreDeForm(forms.ModelForm):
         model = AlimentoLibreDe
         fields = '__all__'
 
+class CustomUserCreationForm(UserCreationForm):
+    
+    class Meta:
+        model = User
+        fields =['username', "first_name", "last_name", "email", "password1", "password2"]
 
 class ProductoForm(forms.ModelForm):
 
@@ -68,8 +73,4 @@ class ProductoForm(forms.ModelForm):
             "fecha_fabricacion": forms.SelectDateWidget()
         }
 
-class CustomUserCreationForm(UserCreationForm):
-    
-    class Meta:
-        model = User
-        fields =['username', "first_name", "last_name", "email", "password1", "password2"]
+

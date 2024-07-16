@@ -15,8 +15,8 @@ from .forms import ProductoForm
 #     form = ProductoForm
 
 # admin.site.register(Marca)
-# admin.site.register(Producto, ProductoAdmin)
-# admin.site.register(Contacto)
+# admin.site.register(Producto, ProductoAdmin) 
+admin.site.register(Contacto)
 
 # ver admin tablas tienda
 admin.site.register(Dieta)

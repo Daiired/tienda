@@ -15,101 +15,67 @@
 <header id="header">
     
     <div>
-        <!-- <nav id="nav">
-            <ul>
-                <li>
-                    <a href="{% url 'home' %}">Inicio</a>
-                </li>
-                <li>
-                    <a href="{% url 'contacto' %}">Contácto</a>
-                </li>
-                <li>
-                    <a href="{% url 'galeria' %}">Galería</a>
-                </li>
-                <li>
-                    <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
-                </li>
-                <li>
-                    <a href="{% url 'listar_alimentos' %}">Listar Alimentos</a>
-                </li>
-
-                
-
-
-                {% if perms.app.add_producto %}
-                <li>
-                    <a href="{% url 'agregar_producto' %}">Agregar producto</a>
-                </li>
-                {% endif %}
-                {% if perms.app.view_producto %}
-                <li>
-                    <a href="{% url 'listar_productos' %}">Listar producto</a>
-                </li>
-                {% endif %}
-                {% if user.is_authenticated %}
-                <li>
-                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
-                        {% csrf_token %}
-                    </form>
-                    <a href="#" onclick="document.getElementById('logout-form').submit();">Cerrar sesión</a>
-                </li>
-                <li>
-                    <a href="#">@{{user.username}}</a>
-                </li>
-                {% else %}
-                <li>
-                    <a href="{% url 'login' %}">Iniciar Sesión</a>
-                </li>
-                <li>
-                    <a href="{% url 'registro' %}">Registrate</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav> -->
+       
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Navbar</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                  </li>
-
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Menu
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
-                      {% if perms.app.add_alimento %}
-                      <li><a class="dropdown-item" href="{% url 'agregar_alimento' %}">Agregar Alimento</a></li>
-                      {% endif %}
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <a class="navbar-brand" href="#">Navbar</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'contacto' %}">Contactanos</a>
+                        </li>
+        
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}" onclick="document.getElementById('logout-form').submit();">Cerrar sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Usuario: "{{ user.username }}"</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro' %}">Regístrate</a>
+                        </li>
+                        {% endif %}
+        
+                        <!-- <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Menú
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% if perms.app.add_alimento %}
+                                <li><a class="dropdown-item" href="{% url 'agregar_alimento' %}">Agregar Alimento</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li> -->
                     </ul>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                  </li>
-                </ul>
-                <form class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-              </div>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
-          </nav>
+        </nav>
     </div>
 </header>
 <div id="contenido">
     {% if user.is_staff %}
+    <h2>Opciones de Administrador</h2>
         <!-- Alimento             -->
+         <h4>-Alimento</h4>
             {% if perms.app.add_alimento %}
             <li>
                 <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
@@ -121,6 +87,7 @@
             </li>
             {% endif %}
         <!-- Categoria Alimento            -->
+        <h4>-Categoria Alimento</h4>
             {% if perms.app.add_categoria_alimento %}
             <li>
                 <a href="{% url 'agregar_categoria' %}">Agregar Categoria Alimento</a>
@@ -133,6 +100,7 @@
             {% endif %}
 
         <!-- Dieta             -->
+        <h4>-Dieta</h4>
             {% if perms.app.add_dieta %}
             <li>
                 <a href="{% url 'agregar_dieta' %}">Agregar Dieta</a>
@@ -145,6 +113,7 @@
             {% endif %}
 
         <!-- Libre de Alimento            -->
+        <h4>-Libre de Alimento</h4>
             {% if perms.app.add_libre_de_alimento %}
             <li>
                 <a href="{% url 'agregar_libre' %}">Agregar Libre de Alimento</a>
@@ -157,6 +126,7 @@
             {% endif %}
 
         <!-- Alimento-Dieta Relacion           -->
+        <h4>-Alimento-Dieta Relación</h4>
             {% if perms.app.add_alimento_dieta %}
             <li>
                 <a href="{% url 'agregar_alimentodieta' %}">Agregar Relación Alimento-Dieta</a>
@@ -167,6 +137,18 @@
                 <a href="{% url 'listar_alimentodietas' %}">Listar Relaciones Alimento-Dietas</a>
             </li>
             {% endif %}
+        <!-- Alimento-LibreDeAlimento Relacion           -->
+        <h4>-Alimento-LibreDeAlimento Relación</h4>
+        {% if perms.app.add_alimento_libre_de %}
+        <li>
+            <a href="{% url 'agregar_alimentolibre' %}">Agregar Relación Alimento-Libre de Alimento</a>
+        </li>
+        {% endif %}
+        {% if perms.app.view_alimento_libre_de %}
+        <li>
+            <a href="{% url 'listar_alimentolibres' %}">Listar Relaciones Alimento-Libre de Alimentos</a>
+        </li>
+        {% endif %}
     {% else %}
 
             
@@ -178,16 +160,7 @@
 </div>
 <footer>
     <footer>
-        <div class="marcas">
-            <img src="{% static 'app/img/footer/apple.png' %}" alt="apple" style="width: 30px;">
-            <img src="{% static 'app/img/footer/lenovo.png' %}" alt="lenovo">
-            <img src="{% static 'app/img/footer/microsoft.png' %}" alt="microsoft">
-            <img src="{% static 'app/img/footer/samsung.png' %}" alt="samsung">
-            <img src="{% static 'app/img/footer/xiaomi.png' %}" alt="xiaomi">
-        </div>
-        <div class="logo_footer">
-            <img src="{% static 'app/img/tecnomarketpngicono.png' %}" alt="logo">
-        </div>
+        
     </footer>
 </footer>
 <script src="{% static 'app/js/menu.js' %}"></script>

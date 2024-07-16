@@ -5,18 +5,45 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.contrib.auth import authenticate, login
+from django.db.models import Q
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
 
+
+
 @login_required
 def home(request):
-    productos = Producto.objects.all()
-    data ={
-        'productos': productos
-    }
-    return render(request,'app/home.html', data)
+    categorias = CategoriaAlimento.objects.all()  # Obtener todas las categorías
+    dietas = Dieta.objects.all()  # Obtener todas las dietas
+    libres_alimentos = LibreDeAlimento.objects.all()  # Obtener todos los alimentos libres
 
+    productos = Alimento.objects.all()
+
+    categoria_seleccionada = request.GET.get('categoria')
+    dietas_seleccionadas = request.GET.getlist('dieta')
+    alimentos_libres_seleccionados = request.GET.getlist('libre_alimento')
+
+    if categoria_seleccionada:
+        productos = productos.filter(id_categoria=categoria_seleccionada)
+
+    if dietas_seleccionadas:
+        productos = productos.filter(alimentodieta__id_dieta__in=dietas_seleccionadas).distinct()
+
+    if alimentos_libres_seleccionados:
+        productos = productos.filter(alimentolibrede__id_libre__in=alimentos_libres_seleccionados).distinct()
+
+    data = {
+        'productos': productos,
+        'categorias': categorias,
+        'dietas': dietas,
+        'libres_alimentos': libres_alimentos,
+        'categoria_seleccionada': categoria_seleccionada,
+        'dietas_seleccionadas': dietas_seleccionadas,
+        'alimentos_libres_seleccionados': alimentos_libres_seleccionados,
+    }
+    return render(request, 'app/home.html', data)
 @login_required
 def contacto(request):
     data = {
@@ -27,7 +54,7 @@ def contacto(request):
         formulario = ContactoForm(data= request.POST)
         if formulario.is_valid():
             formulario.save()
-            data["mensaje"] = "contacto guardado"
+            messages.success(request, "Contacto enviado")
         else:
             data["form"] = formulario
 
@@ -37,6 +64,11 @@ def contacto(request):
 def galeria(request):
     return render(request, 'app/galeria.html')
 
+def descripcion_producto(request, id):
+    alimento = get_object_or_404(Alimento, id=id)
+    dietas_compatibles = AlimentoDieta.objects.filter(alimento=alimento).values_list('id_dieta__nombre', flat=True)
+    restricciones_alimentarias = AlimentoLibreDe.objects.filter(alimento=alimento).values_list('id_libre__nombre', flat=True)
+    return render(request, 'app/detalle.html', {'alimento': alimento, 'dietas_compatibles': dietas_compatibles, 'restricciones_alimentarias': restricciones_alimentarias})
 
 #Alimentos CRUD
 
@@ -352,72 +384,87 @@ def eliminar_AlimentoDieta(request, id):
     alimentodieta= get_object_or_404(AlimentoDieta, id=id)
     alimentodieta.delete()
     messages.success(request, "Eliminado correctamente")
-    return redirect(to="listar_lalimentodietas")
+    return redirect(to="listar_alimentodietas")
 
 
-# #AlimentoLibrede CRUD
+#AlimentoLibrede CRUD
 
-# @permission_required('app.add_alimento_libre_de')
-# def agregar_AlimentoDieta(request):
+@permission_required('app.add_alimento_libre_de')
+def agregar_AlimentoLibreDe(request):
     
-#     data ={
-#         'form': AlimentoDietaForm()
-#     }
+     data ={
+        'form': AlimentoLibreDeForm()
+     }
     
-#     if request.method == 'POST':
-#         formulario = AlimentoDietaForm(data=request.POST)
-#         if formulario.is_valid():
-#             formulario.save()
-#             messages.success(request, "Relacion Alimento-Dieta registrada")
-#         else:
-#             data["form"] = formulario 
+     if request.method == 'POST':
+         formulario = AlimentoLibreDeForm(data=request.POST)
+         if formulario.is_valid():
+             formulario.save()
+             messages.success(request, "Relacion Alimento-LibreDeAlimento registrada")
+         else:
+             data["form"] = formulario 
 
-#     return render(request, 'app/alimentodieta/agregar.html',data)
+     return render(request, 'app/alimentolibrede/agregar.html',data)
 
-# @permission_required('app.view_alimento_dieta')
-# def listar_AlimentoDietas(request):
-#     alimentodietas = AlimentoDieta.objects.all()
-#     page = request.GET.get('page',1)
+@permission_required('app.add_alimento_libre_de')
+def listar_AlimentoLibreDe(request):
+     alimentolibres = AlimentoLibreDe.objects.all()
+     page = request.GET.get('page',1)
 
-#     try:
-#         paginator = Paginator(alimentodietas, 5)
-#         alimentodietas = paginator.page(page)
-#     except:
-#         raise Http404
+     try:
+         paginator = Paginator(alimentolibres, 5)
+         alimentolibres = paginator.page(page)
+     except:
+         raise Http404
     
 
-#     data ={
-#         'entity': alimentodietas,
-#         'paginator': paginator
-#     }
-#     return render(request, 'app/alimentodieta/listar.html', data)
+     data ={
+         'entity': alimentolibres,
+         'paginator': paginator
+     }
+     return render(request, 'app/alimentolibrede/listar.html', data)
 
-# @permission_required('app.change_alimento_dieta')
-# def modificar_AlimentoDieta(request, id):
-#     alimentodieta = get_object_or_404(AlimentoDieta, id=id)
+@permission_required('app.change_alimento_libre_de')
+def modificar_AlimentoLibreDe(request, id):
+     alimentolibre = get_object_or_404(AlimentoLibreDe, id=id)
     
-#     data ={
-#         'form': AlimentoDietaForm(instance=alimentodieta)
-#     }
+     data ={
+         'form': AlimentoLibreDeForm(instance=alimentolibre)
+     }
 
-#     if request.method == 'POST':
-#         formulario = AlimentoDietaForm(data= request.POST, instance=alimentodieta)
-#         if formulario.is_valid():
-#             formulario.save()
-#             messages.success(request, "Modificado correctamente")
-#             return redirect(to="listar_alimentodietas")
-#         data["form"] =formulario
+     if request.method == 'POST':
+         formulario = AlimentoLibreDeForm(data= request.POST, instance=alimentolibre)
+         if formulario.is_valid():
+             formulario.save()
+             messages.success(request, "Modificado correctamente")
+             return redirect(to="listar_alimentolibres")
+         data["form"] =formulario
 
 
-#     return render(request, 'app/alimentodieta/modificar.html',data )
+     return render(request, 'app/alimentolibrede/modificar.html',data )
 
-# @permission_required('app.delete_alimento_dieta')
-# def eliminar_AlimentoDieta(request, id):
-#     alimentodieta= get_object_or_404(AlimentoDieta, id=id)
-#     alimentodieta.delete()
-#     messages.success(request, "Eliminado correctamente")
-#     return redirect(to="listar_lalimentodietas")
+@permission_required('app.delete_alimento_libre_de')
+def eliminar_AlimentoLibreDe(request, id):
+     alimentolibre= get_object_or_404(AlimentoLibreDe, id=id)
+     alimentolibre.delete()
+     messages.success(request, "Eliminado correctamente")
+     return redirect(to="listar_alimentolibres")
 
+def registro(request):
+    data = {
+        'form': CustomUserCreationForm
+    }
+
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(data=request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            user = authenticate(username=formulario.cleaned_data["username"], password =formulario.cleaned_data["password1"])
+            login(request, user)
+            messages.success(request, "Te has registrado correctamente")
+            return redirect(to="home")
+        data["form"]=formulario
+    return render (request, 'registration/registro.html', data)
 
 
 
@@ -484,21 +531,6 @@ def eliminar_Producto(request, id):
     messages.success(request, "Eliminado correctamente")
     return redirect(to="listar_productos")
 
-def registro(request):
-    data = {
-        'form': CustomUserCreationForm
-    }
-
-    if request.method == 'POST':
-        formulario = CustomUserCreationForm(data=request.POST)
-        if formulario.is_valid():
-            formulario.save()
-            user = authenticate(username=formulario.cleaned_data["username"], password =formulario.cleaned_data["password1"])
-            login(request, user)
-            messages.success(request, "Te has registrado correctamente")
-            return redirect(to="home")
-        data["form"]=formulario
-    return render (request, 'registration/registro.html', data)
 
 def product_detail(request, product_id):
     # Aquí obtienes los datos nutricionales del producto (ejemplo)
