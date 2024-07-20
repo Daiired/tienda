@@ -1,270 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Bona+Nova:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-* {
-    margin:0;
-    padding:0;
+/* -------------- Base --------------*/
+.body-base{
+    margin: 0;
+    background-color: #FEFAE0;
+    font-family: "Montserrat", sans-serif;
 }
 
-body {
-    background-color: #EDF2F7;
-    font-family: 'Open Sans', sans-serif;
+.navbar{
+    background-color: #3A5A40;
+}
+
+.navbar-brand{
+    font-family: "Bona Nova", serif;
+    font-weight: 700;
+}
+
+.nav-link{
+    font-family: "Bona Nova", serif;
 }
 
 
-header {
+/* -------------- Index --------------*/
+.body-index{
+    box-sizing: border-box;
+    font-size: 18px;
+    
+}
+
+/* Banner-Index */
+#hero{
     width: 100%;
-    height: 80px;
-    background-color: #2B6CB0;
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.329), rgba(0, 0, 0, 0.233)), url('../img/Banner/Banner.jpg') no-repeat center / cover;
+    color: white;
+    background-position: top;
+    max-height: 700px;
+    overflow: hidden;
+}
+
+.h1-index{
+    font-family: "Bona Nova", serif;
+}
+
+.container-index {
+    width: 90%;
+    height: 100%;
+    max-width: 1000px;
+    margin: 0 50px 0 auto;
     display: flex;
-}
-
-header > div {
-    width: 50%;
-}
-
-.galeria {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 30px;
-}
-
-.galeria img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-
-input[type=text], input[type=email], select, textarea {
-    width: 100%;
-    padding: 5px 10px;
-}
-
-.button {
-    padding: 5px 10px;
-    border: none;
-    color:white;
-    border-radius: 5px;
-}
-
-.button.primary {
-    background-color: #2B6CB0;
-}
-
-.button.secondary {
-    background-color: #4A5568;
-}
-
-
-
-
-
-
-#contenido {
-    width: 80%;
-    margin: auto;
-    max-width: 1280px;
-    min-height: 80vh;
-}
-
-.productos {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-@keyframes animacion_producto_desktop {
-    0% {
-        transform: rotate(-20deg);
-        opacity: 0;
-    }
-
-    100% {
-        transform: rotate(0);
-        opacity: 1;
-    }
-}
-
-
-.productos .producto {
-    width: 25%;
-    margin-top: 15px;
-    animation: animacion_producto_desktop 0.5s;
-}
-
-.productos .producto img {
-    width: 80%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.productos .producto .contenedor_producto {
-    background-color: white;
-    width: 80%;
-    margin:auto;
-}
-
-.productos .producto .detalles {
-    padding: 5px;
-}
-
-
-/*FOOTER*/
-
-footer {
-    width: 100%;
-    height: 300px;
-    background-color: #2D3748;
-}
-
-footer .marcas {
-    width: 100%;
-    height: 100px;
-    background-color: #4A5568;
-    display: flex;
-    justify-content: space-around;
     align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-footer .marcas img {
-    width: 50px;
+
+.container-index .info .h1-index{
+    font-size: 4rem;
 }
 
-footer .logo_footer {
+.container-index .info .p-index-decoration{
+    font-size: 2rem;
+}
+
+.container-index .info .h2-index{
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 370px;
+    margin: 0 auto;
+}
+
+.container-index .info .btn-login{
+    text-decoration: none;
+    display: inline-block;
+    background: linear-gradient(rgba(0, 0, 0, 0.521), rgba(0, 0, 0, 0.308));
+    border: 2px solid #3A5A40;
+    font-size: 1.4rem;
+    padding: 0.5em 2em;
+    margin-top: 2rem;
+    color: white;
+    font-weight: 600;
+}
+
+.container-index .info .p-index{
+    font-size: 1.2rem;
+}
+
+.container-index .info .p-index a{
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+
+
+/* Index-bottom */
+.index-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    max-height: 180px;
+}
+
+.h1-index-bottom {
+    font-family: "Bona Nova", serif;
+    color: #3A5A40;
+    text-align: center;
+}
+
+.p-index-decoration-v{
+    color: #3A5A40;
+    margin-bottom: 20px;
+}
+
+.container-columns {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    justify-content: space-between;
+    gap: 20px;
+    color: #463F3A;
+    font-size: 20px;
+    font-weight: 600
+}
+
+.column {
+    width: 48%;
+}
+
+.content-column {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+@media only screen and (max-width: 768px){
+    .body-index{
+        font-size: 10px;
+    }
+    .container-index{
+        margin: 0 auto;
+    }
+    .container-columns{
+        font-size: 16px;
+    }
+    .container-index .info .p-index-decoration img{
+        display: none;
+    }
+
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-brand img {
+        display: none;
+    }
+
+    .navbar-toggler {
+        margin-left: auto;
+    }
+    
+    .navbar-nav {
+        text-align: center;
+    }
+    
+    .nav-item {
+        margin: 0.5rem 0;
+    }
+}
+
+
+
+
+/* -------------- Login -------------- */
+.body-login {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.wrapper {
+    padding: 0 20px 0 20px;
+}
+
+.main {
     display: flex;
     justify-content: center;
     align-items: center;
-    height:calc(100% - 100px);
+    min-height: 100vh;
 }
 
-footer .logo_footer img {
-    width: 100px;
+.h1-login {
+    font-size: 1.5rem;
+    font-family: "Bona Nova", serif;
+    font-weight: 700;
+    color: #3A5A40;
 }
 
-.menu {
-    width: 40px;
+.side-image-contacto {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.329), rgba(0, 0, 0, 0.233)), url("../img/Banner/Contacto.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 10px 0 0 10px;
+    position: relative;
+}
+
+.side-image-registro {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.329), rgba(0, 0, 0, 0.233)), url("../img/Banner/Registro.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 10px 0 0 10px;
+    position: relative;
+}
+
+.side-image-login {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.329), rgba(0, 0, 0, 0.233)), url("../img/Banner/Login.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 0 10px 10px 0;
+    position: relative;
+}
+
+.row {
+    width: 900px;
+    height: 550px;
+    border-radius: 10px;
+    background: #fff;
+    padding: 0px;
+    box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.2);
+}
+
+.text {
     position: absolute;
-    left: 10px;
-    top: 10px;
-    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%; 
 }
 
-label.error {
-    color: darkred;
+.h1-login-2 {
+    font-size: 30px;
+    color: #fff;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }
 
-input.error {
-    border: 2px solid darkred;
+.p-login {
+    font-weight: 500;
+    font-size: 14px;
+    color: #fff;
 }
 
-
-/*MEDIA QUERIES*/
-
-/*TABLET*/
-
-@media(max-width:1024px) {
-
-    .galeria {
-        grid-template-columns:1fr 1fr;
-    }
-
-    @keyframes animacion_producto_tablet {
-
-        0% {
-            opacity: 0;/*0-1*/
-        }
-
-        100% {
-            opacity: 1;
-        }
-
-    }
-
-    .productos .producto {
-        width: 50%;
-        animation: animacion_producto_tablet 2s;
-    }
-
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
-/*SMARTPHONE*/
-@media(max-width:480px) {
-
-    .galeria {
-        grid-template-columns: 1fr;
-    }
-
-    .menu {
-        display: block;
-    }
-
-    @keyframes animacion_producto_smartphone {
-
-        0% {
-            transform: scale(0.1);/*0 - 1*/
-        }
-
-        80%{
-            transform: scale(1.05);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-
-
-    .productos .producto {
-        width: 100%;
-        animation: animacion_producto_smartphone 0.8s;
-    }
-
-    header {
-        flex-direction: column;
-        height: 60px;
-        transition: all 0.8s;
-        /*position: fixed;
-        left:0;
-        top:0;*/
-        overflow: hidden;
-    }
-
-    #contenido {
-        margin-top: 60px;
-    }
-
-    header > div {
-        width: 100%;
-    }
-
-    nav {
-        justify-content: center;
-    }
-
-    .contenedor_logo {
-        justify-content: center;
-    }
-
-    .logo {
-        margin-top: 15px;
-    }
-
-    nav > ul {
-        margin-right: 0;
-    }
-
-    nav > ul > li {
-        display: block;
-        margin:0;
-        text-align: center;
-        padding: 20px 0;
-    }
-
+.input-box {
+    width: 330px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.grafico-nutricional {
-    max-width: 300px;
+.input-box .logo-login {
+    display: block;
     margin: 0 auto;
+    width: 70px;
+    height: 70px;
 }
-#nutritionChart {
-    width: 100% !important;
-    height: auto !important;
+
+.input-box .header-login {
+    color: #463F3A;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 10px 0 10px;
+}
+
+.input {
+    height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    margin-bottom: 20px;
+    color: #40414a;
+}
+
+.input-box .input-field label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.submit-login {
+    border: none;
+    outline: none;
+    height: 45px;
+    background: #3A5A40;
+    border-radius: 25px;
+    transition: .4s;
+    color: #fff;
+    font-weight: 500;
+}
+
+.submit-login:hover {
+    background: #588157;
+    color: #fff;
+}
+
+.a-login {
+    text-decoration: none;
+    color: #463F3A;
+    font-weight: 600;
+    font-size: 10px;
+}
+
+.a-login:hover {
+    color: #BC6C25;
+}
+
+.btn-registro {
+    display: inline-block;
+    text-align: center;
+    background: #3A5A40;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: .4s;
+}
+
+.btn-registro:hover {
+    background: #588157;
+    color: #fff;
+}
+
+@media only screen and (max-width: 768px) {
+    .side-image {
+        border-radius: 10px 10px 0 0;
+    }
+
+    img {
+        width: 35px;
+        position: absolute;
+        top: 20px;
+        left: 47%;
+    }
+
+    .text {
+        position: absolute;
+        top: 70%;
+        text-align: center;
+        width: 90%;
+    }
+
+    .text p, i {
+        font-size: 16px;
+    }
+
+    .row {
+        max-width: 420px;
+        width: 100%;
+    }
+}
+
+/* -------------- Contacto -------------- */
+.h1-contacto{
+    font-family: "Bona Nova", serif;
+    color: #fff;
+}
+
+.span-contacto{
+    font-weight: 500;
+    color: #fff;
 }

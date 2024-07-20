@@ -118,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -139,3 +139,7 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+PAYPAL_MODE = 'sandbox'  # 'sandbox' or 'live'
+PAYPAL_CLIENT_ID = 'AXMdHRCbqfDLbSQeI_UH9F_Ugqg0P3qGku2kwJ_vzhnAWt5PZV8GIEMccid21HJDx6AHAYU3c85LQSsC'
+PAYPAL_CLIENT_SECRET = 'EEtY0NSeEL-oiSLMwA3pRJt1Txu2CQVsEZltMhaelq2EXBWHOv76ZROfVKp_mOzpZStakHisSYc62jrT'

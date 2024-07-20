@@ -11,47 +11,140 @@
     .filtro {
         margin-bottom: 10px;
     }
+    .categoria {
+        cursor: pointer;
+        display: inline-block;
+        margin: 5px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+    .categoria:hover {
+        background-color: #e0e0e0;
+    }
 </style>
 {% endblock %}
 {% block contenido %}
 
 {% load humanize %}
-<!-- Formulario para filtrar por categoría, dieta y libre de alimento -->
-<form method="GET" class="filtro">
-    <label for="categoria">Filtrar por categoría:</label>
-    <select name="categoria" id="categoria">
-        <option value="">Todas las categorías</option>
-        {% for categoria in categorias %}
-        <option value="{{ categoria.id }}" {% if categoria.id == categoria_seleccionada %}selected{% endif %}>
-            {{ categoria.nombre }}
-        </option>
-        {% endfor %}
-    </select>
-    <button type="submit">Filtrar</button>
-</form>
+
+    {% if user.is_staff %}
+    <h2>Opciones de Administrador</h2>
+        <!-- Alimento             -->
+         <h4>-Alimento</h4>
+            {% if perms.app.add_alimento %}
+            <li>
+                <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_alimento %}
+            <li>
+                <a href="{% url 'listar_alimentos' %}">Listar Alimentos</a>
+            </li>
+            {% endif %}
+        <!-- Categoria Alimento            -->
+        <h4>-Categoria Alimento</h4>
+            {% if perms.app.add_categoria_alimento %}
+            <li>
+                <a href="{% url 'agregar_categoria' %}">Agregar Categoria Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_categoria_alimento %}
+            <li>
+                <a href="{% url 'listar_categorias' %}">Listar Categorias Alimentos</a>
+            </li>
+            {% endif %}
+
+        <!-- Dieta             -->
+        <h4>-Dieta</h4>
+            {% if perms.app.add_dieta %}
+            <li>
+                <a href="{% url 'agregar_dieta' %}">Agregar Dieta</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_dieta %}
+            <li>
+                <a href="{% url 'listar_dietas' %}">Listar Dietas</a>
+            </li>
+            {% endif %}
+
+        <!-- Libre de Alimento            -->
+        <h4>-Libre de Alimento</h4>
+            {% if perms.app.add_libre_de_alimento %}
+            <li>
+                <a href="{% url 'agregar_libre' %}">Agregar Libre de Alimento</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_libre_de_alimento %}
+            <li>
+                <a href="{% url 'listar_libres' %}">Listar Libre de Alimentos</a>
+            </li>
+            {% endif %}
+
+        <!-- Alimento-Dieta Relacion           -->
+        <h4>-Alimento-Dieta Relación</h4>
+            {% if perms.app.add_alimento_dieta %}
+            <li>
+                <a href="{% url 'agregar_alimentodieta' %}">Agregar Relación Alimento-Dieta</a>
+            </li>
+            {% endif %}
+            {% if perms.app.view_alimento_dieta %}
+            <li>
+                <a href="{% url 'listar_alimentodietas' %}">Listar Relaciones Alimento-Dietas</a>
+            </li>
+            {% endif %}
+        <!-- Alimento-LibreDeAlimento Relacion           -->
+        <h4>-Alimento-LibreDeAlimento Relación</h4>
+        {% if perms.app.add_alimento_libre_de %}
+        <li>
+            <a href="{% url 'agregar_alimentolibre' %}">Agregar Relación Alimento-Libre de Alimento</a>
+        </li>
+        {% endif %}
+        {% if perms.app.view_alimento_libre_de %}
+        <li>
+            <a href="{% url 'listar_alimentolibres' %}">Listar Relaciones Alimento-Libre de Alimentos</a>
+        </li>
+        {% endif %}
+    {% else %}
+
+            
+
+    {% endif %}
 
 <form method="GET" class="filtro">
+    <fieldset>
+        <legend>Filtrar por categoría:</legend>
+        <a href="{% url 'home' %}{% if request.GET.dieta %}?dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
+            Todas las categorías
+        </a>
+        {% for categoria in categorias %}
+        <a href="{% url 'home' %}?categoria={{ categoria.id }}{% if request.GET.dieta %}&dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
+            {{ categoria.nombre }}
+        </a>
+        {% endfor %}
+    </fieldset>
+
     <fieldset>
         <legend>Filtrar por dieta:</legend>
         {% for dieta in dietas %}
         <input type="checkbox" id="dieta_{{ dieta.id }}" name="dieta" value="{{ dieta.id }}"
-               {% if dieta.id in dietas_seleccionadas %}checked{% endif %}>
+               {% if dieta.id|stringformat:"s" in request.GET.dieta %}checked{% endif %}>
         <label for="dieta_{{ dieta.id }}">{{ dieta.nombre }}</label><br>
         {% endfor %}
     </fieldset>
-    <button type="submit">Filtrar</button>
-</form>
 
-<form method="GET" class="filtro">
     <fieldset>
         <legend>Filtrar por alimentos libres:</legend>
         {% for libre_alimento in libres_alimentos %}
         <input type="checkbox" id="libre_alimento_{{ libre_alimento.id }}" name="libre_alimento"
                value="{{ libre_alimento.id }}"
-               {% if libre_alimento.id in alimentos_libres_seleccionados %}checked{% endif %}>
+               {% if libre_alimento.id|stringformat:"s" in request.GET.libre_alimento %}checked{% endif %}>
         <label for="libre_alimento_{{ libre_alimento.id }}">{{ libre_alimento.nombre }}</label><br>
         {% endfor %}
     </fieldset>
+
     <button type="submit">Filtrar</button>
 </form>
 

@@ -10,19 +10,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    let proteinas = {{ alimento.proteinas|safe }};
+    let carbohidratos = {{ alimento.carbohidratos|safe }};
+    let grasas = {{ alimento.grasas|safe }};
+    let energia = {{ alimento.energia|safe }};
     var ctx = document.getElementById('nutritionChart').getContext('2d');
-var chart = new Chart(ctx, {
+    var chart = new Chart(ctx, {
     type: 'pie',
     data: {
         labels: ['Proteínas', 'Carbohidratos', 'Grasas', 'Energía'],
         datasets: [{
             label: 'Información Nutricional',
-            data: [
-                {{ alimento.proteinas }},
-                {{ alimento.carbohidratos }},
-                {{ alimento.grasas }},
-                {{ alimento.energia }}
-            ],
+            data: [proteinas, carbohidratos, grasas, energia],
             backgroundColor: [
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
@@ -35,7 +34,7 @@ var chart = new Chart(ctx, {
                 'rgba(255, 205, 86, 1)',
                 'rgba(54, 162, 235, 1)'
             ],
-            borderWidth: 1
+            borderWidth: 2
         }]
     },
     options: {
@@ -84,6 +83,12 @@ var chart = new Chart(ctx, {
         <h2>${{ alimento.precio | intcomma }}</h2>
         <p>{{ alimento.descripcion }}</p>
         <!-- Agrega aquí otros detalles que quieras mostrar -->
+        <form method="post" action="{% url 'agregar_al_carrito' alimento.id %}">
+            {% csrf_token %}
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" min="1" value="1" required>
+            <button type="submit">Agregar al Carrito</button>
+        </form>
     </div>
 </div>
 <div class="dietas-compatibles">
@@ -95,7 +100,7 @@ var chart = new Chart(ctx, {
     </ul>
 </div>
 <div class="restricciones-alimentarias">
-    <h2>Restricciones Alimentarias</h2>
+    <h2>Restricciones Alimentarias Compatible</h2>
     <ul>
         {% for restriccion in restricciones_alimentarias %}
         <li>{{ restriccion }}</li>

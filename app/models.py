@@ -1,25 +1,8 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
-class Marca(models.Model):
-    nombre = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nombre
-
-class Producto(models.Model):
-    nombre = models.CharField(max_length=50)
-    precio = models.IntegerField()
-    descripcion = models.TextField()
-    nuevo = models.BooleanField()
-    marca = models.ForeignKey(Marca, on_delete=models.PROTECT)
-    fecha_fabricacion = models.DateField()
-    imagen = models.ImageField(upload_to="productos", null=True)
-    def __str__(self):
-        return self.nombre
     
-
 opciones_consultas = [
     [0, "consulta"],
     [1, "reclamo"],
@@ -27,6 +10,7 @@ opciones_consultas = [
     [3, "felicitaciones"]
 ]
 
+#tablas tienda alimentos
 
 class Contacto(models.Model):
     nombre = models.CharField(max_length=50)
@@ -38,16 +22,6 @@ class Contacto(models.Model):
     def __str__(self):
         return self.nombre
     
-
-
-
-
-#tablas tienda proyecto
-
-
-
-
-
 
 class CategoriaAlimento(models.Model):
     nombre = models.CharField(max_length=30)
@@ -71,8 +45,6 @@ class Alimento(models.Model):
     def __str__(self):
         return self.nombre_alimento
     
-
-
 
 class LibreDeAlimento(models.Model):
     nombre = models.CharField(max_length=30)
@@ -105,3 +77,66 @@ class AlimentoDieta(models.Model):
 
     def __str__(self):
         return f'{self.alimento} - {self.id_dieta}'
+
+class Carrito(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def get_total(self):
+        items = CarritoItem.objects.filter(carrito=self)
+        return sum(item.alimento.precio * item.cantidad for item in items)
+
+    def __str__(self):
+        return f"Carrito de {self.usuario.username}"
+
+
+class CarritoItem(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
+    alimento = models.ForeignKey(Alimento, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.alimento.nombre_alimento}"
+
+    def precio_total(self):
+        return self.alimento.precio * self.cantidad
+    
+class Pedido(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"Pedido {self.id} de {self.usuario.username}"
+
+class PedidoItem(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
+    alimento = models.ForeignKey(Alimento, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.alimento.nombre_alimento}"
+
+
+
+
+
+
+    
+class Marca(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombre
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=50)
+    precio = models.IntegerField()
+    descripcion = models.TextField()
+    nuevo = models.BooleanField()
+    marca = models.ForeignKey(Marca, on_delete=models.PROTECT)
+    fecha_fabricacion = models.DateField()
+    imagen = models.ImageField(upload_to="productos", null=True)
+    def __str__(self):
+        return self.nombre
+    

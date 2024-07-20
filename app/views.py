@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto, Alimento, CategoriaAlimento, Dieta, LibreDeAlimento, AlimentoLibreDe, AlimentoDieta
+from .models import Producto, Alimento, CategoriaAlimento, Dieta, LibreDeAlimento, AlimentoLibreDe, AlimentoDieta, Carrito, CarritoItem, Pedido, PedidoItem
 from .forms import ContactoForm, ProductoForm, CustomUserCreationForm, AlimentoForm, CategoriaForm, DietaForm, LibreForm, AlimentoDietaForm, AlimentoLibreDeForm
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -8,10 +8,16 @@ from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
-
+from django.urls import reverse
+from django.conf import settings
+import paypalrestsdk
+from .paypal_config import *
+from paypalrestsdk import Payment
 # Create your views here.
 
 
+def index(request):
+    return render(request, 'app/index.html')
 
 @login_required
 def home(request):
@@ -539,3 +545,141 @@ def product_detail(request, product_id):
         'data': [30, 40, 30],  # Ejemplo de valores de porcentaje
     }
     return render(request, 'product_detail.html', {'data': data})
+
+@login_required
+def agregar_al_carrito(request, alimento_id):
+    alimento = get_object_or_404(Alimento, id=alimento_id)
+    carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
+
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
+        item, item_creado = CarritoItem.objects.get_or_create(carrito=carrito, alimento=alimento)
+
+        if not item_creado:
+            item.cantidad += cantidad
+        else:
+            item.cantidad = cantidad
+
+        item.save()
+
+    return redirect('ver_carrito')
+
+@login_required
+def ver_carrito(request):
+    carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
+    items = CarritoItem.objects.filter(carrito=carrito)
+    return render(request, 'app/carrito.html', {'items': items, 'carrito': carrito})
+
+# def realizar_pedido(request):
+#     carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
+#     items = CarritoItem.objects.filter(carrito=carrito)
+    
+#     if not items:
+#         return redirect('ver_carrito')
+
+#     pedido = Pedido.objects.create(usuario=request.user, total=sum(item.alimento.precio * item.cantidad for item in items))
+
+#     for item in items:
+#         PedidoItem.objects.create(pedido=pedido, alimento=item.alimento, cantidad=item.cantidad, precio=item.alimento.precio)
+#         item.delete()  # Vaciar el carrito después de realizar el pedido
+
+#     carrito.delete()  # Eliminar el carrito después de realizar el pedido
+
+#     return redirect('ver_pedido', pedido_id=pedido.id)
+@login_required
+def realizar_pedido(request):
+    carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
+    items = CarritoItem.objects.filter(carrito=carrito)
+    
+    if not items:
+        return redirect('ver_carrito')
+
+    pedido = Pedido.objects.create(usuario=request.user, total=sum(item.alimento.precio * item.cantidad for item in items))
+
+    for item in items:
+        PedidoItem.objects.create(pedido=pedido, alimento=item.alimento, cantidad=item.cantidad, precio=item.alimento.precio)
+        item.delete()  # Vaciar el carrito después de realizar el pedido
+
+    carrito.delete()  # Eliminar el carrito después de realizar el pedido
+
+    return redirect('procesar_pago', pedido_id=pedido.id)
+
+@login_required
+def procesar_pago(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Crear un nuevo pago utilizando la SDK de PayPal
+    pago = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(reverse('pago_exitoso', args=[pedido.id])),
+            "cancel_url": request.build_absolute_uri(reverse('pago_cancelado'))
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": f"Pedido {pedido.id}",
+                    "sku": f"pedido_{pedido.id}",
+                    "price": str(pedido.total),
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": str(pedido.total),
+                "currency": "USD"
+            },
+            "description": f"Pago del pedido {pedido.id}"
+        }]
+    })
+
+    if pago.create():
+        for link in pago.links:
+            if link.rel == "approval_url":
+                return redirect(link.href)
+    else:
+        return render(request, 'app/pago_error.html', {'error': pago.error})
+
+@login_required
+def pago_exitoso(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    pago_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    pago = paypalrestsdk.Payment.find(pago_id)
+
+    if pago.execute({"payer_id": payer_id}):
+        pedido.estado = 'pagado'
+        pedido.save()
+        
+        items = PedidoItem.objects.filter(pedido=pedido)
+        
+        return render(request, 'app/pedido.html', {'pedido': pedido, 'items': items})
+    else:
+        return render(request, 'app/pago_error.html', {'error': pago.error})
+@login_required
+def pago_cancelado(request):
+    return render(request, 'app/pago_cancelado.html')
+@login_required
+def ver_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    items = PedidoItem.objects.filter(pedido=pedido)
+    return render(request, 'app/pedido.html', {'pedido': pedido, 'items': items})
+
+# @login_required
+# def ver_carrito(request):
+#     carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
+#     items = carrito.carritoitem_set.all()
+#     total_precio = carrito.total_precio()
+#     return render(request, 'app/carrito.html', {'carrito': carrito, 'items': items, 'total_precio': total_precio})
+
+@login_required
+def eliminar_del_carrito(request, item_id):
+    item = get_object_or_404(CarritoItem, id=item_id)
+    item.delete()
+    return redirect('ver_carrito')
+
