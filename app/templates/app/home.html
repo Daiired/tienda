@@ -1,136 +1,143 @@
 {% extends 'app/base.html' %}
-
 {% load static %}
-
-{% block js%}
-
-{% endblock %}
-
-{% block css %}
-<style>
-    .filtro {
-        margin-bottom: 10px;
-    }
-    .categoria {
-        cursor: pointer;
-        display: inline-block;
-        margin: 5px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        text-align: center;
-        background-color: #f8f8f8;
-    }
-    .categoria:hover {
-        background-color: #e0e0e0;
-    }
-</style>
-{% endblock %}
 {% block contenido %}
-
+{% block js %}
+<script src="{% static 'app/js/clearFilters.js' %}"></script>
+{% endblock %}  
 {% load humanize %}
-
+<!-- Mensaje Bienvenida -->
+<div class="welcome-container">
+    <div class="welcome-message">
+        Bienvenido/a {{ user.username }}
+    </div>
     {% if user.is_staff %}
-    <h2>Opciones de Administrador</h2>
-        <!-- Alimento             -->
-         <h4>-Alimento</h4>
-            {% if perms.app.add_alimento %}
-            <li>
-                <a href="{% url 'agregar_alimento' %}">Agregar Alimento</a>
-            </li>
-            {% endif %}
-            {% if perms.app.view_alimento %}
-            <li>
-                <a href="{% url 'listar_alimentos' %}">Listar Alimentos</a>
-            </li>
-            {% endif %}
-        <!-- Categoria Alimento            -->
-        <h4>-Categoria Alimento</h4>
-            {% if perms.app.add_categoria_alimento %}
-            <li>
-                <a href="{% url 'agregar_categoria' %}">Agregar Categoria Alimento</a>
-            </li>
-            {% endif %}
-            {% if perms.app.view_categoria_alimento %}
-            <li>
-                <a href="{% url 'listar_categorias' %}">Listar Categorias Alimentos</a>
-            </li>
-            {% endif %}
-
-        <!-- Dieta             -->
-        <h4>-Dieta</h4>
-            {% if perms.app.add_dieta %}
-            <li>
-                <a href="{% url 'agregar_dieta' %}">Agregar Dieta</a>
-            </li>
-            {% endif %}
-            {% if perms.app.view_dieta %}
-            <li>
-                <a href="{% url 'listar_dietas' %}">Listar Dietas</a>
-            </li>
-            {% endif %}
-
-        <!-- Libre de Alimento            -->
-        <h4>-Libre de Alimento</h4>
-            {% if perms.app.add_libre_de_alimento %}
-            <li>
-                <a href="{% url 'agregar_libre' %}">Agregar Libre de Alimento</a>
-            </li>
-            {% endif %}
-            {% if perms.app.view_libre_de_alimento %}
-            <li>
-                <a href="{% url 'listar_libres' %}">Listar Libre de Alimentos</a>
-            </li>
-            {% endif %}
-
-        <!-- Alimento-Dieta Relacion           -->
-        <h4>-Alimento-Dieta Relación</h4>
-            {% if perms.app.add_alimento_dieta %}
-            <li>
-                <a href="{% url 'agregar_alimentodieta' %}">Agregar Relación Alimento-Dieta</a>
-            </li>
-            {% endif %}
-            {% if perms.app.view_alimento_dieta %}
-            <li>
-                <a href="{% url 'listar_alimentodietas' %}">Listar Relaciones Alimento-Dietas</a>
-            </li>
-            {% endif %}
-        <!-- Alimento-LibreDeAlimento Relacion           -->
-        <h4>-Alimento-LibreDeAlimento Relación</h4>
-        {% if perms.app.add_alimento_libre_de %}
-        <li>
-            <a href="{% url 'agregar_alimentolibre' %}">Agregar Relación Alimento-Libre de Alimento</a>
-        </li>
-        {% endif %}
-        {% if perms.app.view_alimento_libre_de %}
-        <li>
-            <a href="{% url 'listar_alimentolibres' %}">Listar Relaciones Alimento-Libre de Alimentos</a>
-        </li>
-        {% endif %}
+    <div class="welcome-question">
+        ¿Qué deseas hacer hoy?
+    </div>
     {% else %}
+    <div class="welcome-question">
+        ¿Qué deseas comer hoy?
+    </div>
+    {%endif%}
+</div>
+<!-- CRUD -->
+{% if user.is_staff %}
+<div class="category">
+    <div class="container">
+        <div class="category-item-container has-scrollbar">
+            <div class="category-item">
 
-            
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/Banner/Alimento.jpg' %}" alt="alimento">
+                </div>
 
-    {% endif %}
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Alimento</h3>
 
-<form method="GET" class="filtro">
-    <fieldset>
-        <legend>Filtrar por categoría:</legend>
-        <a href="{% url 'home' %}{% if request.GET.dieta %}?dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
-            Todas las categorías
-        </a>
-        {% for categoria in categorias %}
-        <a href="{% url 'home' %}?categoria={{ categoria.id }}{% if request.GET.dieta %}&dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
-            {{ categoria.nombre }}
-        </a>
-        {% endfor %}
-    </fieldset>
+                        <p class="category-item-amount"><a href="{% url 'agregar_alimento' %}">Agregar alimento</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_alimentos' %}">Listar alimentos</a></p>
 
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-item">
+
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/banner/Categoria-alimento.jpg' %}" alt="alimento">
+                </div>
+
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Categoría Alimento</h3>
+
+                        <p class="category-item-amount"><a href="{% url 'agregar_categoria' %}">Agregar categoría alimento</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_categorias' %}">Listar categoría alimentos</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-item">
+
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/banner/Dieta.jpg' %}" alt="alimento">
+                </div>
+
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Dieta</h3>
+
+                        <p class="category-item-amount"><a href="{% url 'agregar_dieta' %}">Agregar dieta</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_dietas' %}">Listar dietas</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-item">
+
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/banner/Libre-de-Alimento.jpg' %}" alt="alimento">
+                </div>
+
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Libre de: Alimento</h3>
+
+                        <p class="category-item-amount"><a href="{% url 'agregar_libre' %}">Agregar libre de: alimento</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_libres' %}">Listar libre de: alimentos</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-item">
+
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/Banner/Alimento-dieta-relacion.jpg' %}" alt="alimento">
+                </div>
+
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Alimento-Dieta Relación</h3>
+
+                        <p class="category-item-amount"><a href="{% url 'agregar_alimentodieta' %}">Agregar relación Alimento-Dieta</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_alimentodietas' %}">Listar relaciones Alimento-Dietas</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-item">
+
+                <div class="category-img-box">
+                    <img class="category-img" src="{% static 'app/img/Banner/Alimento-Librede-Alimento-Relacion.jpg' %}" alt="alimento">
+                </div>
+
+                <div class="category-content-box">
+                    <div class="category-content-flex">
+                        <h3 class="category-item-title">Alimento-Libre de: Alimento Relación</h3>
+
+                        <p class="category-item-amount"><a href="{% url 'agregar_alimentolibre' %}">Agregar relación Alimento-Libre de: Alimento</a></p>
+                        <p class="category-item-amount"><a href="{% url 'listar_alimentolibres' %}">Listar relaciones Alimento-Libre de: Alimentos</a></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- Formulario para filtros avanzados (dieta y alimentos libres) -->
+<form method="GET" class="filtro-avanzado mb-2">
     <fieldset>
         <legend>Filtrar por dieta:</legend>
         {% for dieta in dietas %}
-        <input type="checkbox" id="dieta_{{ dieta.id }}" name="dieta" value="{{ dieta.id }}"
-               {% if dieta.id|stringformat:"s" in request.GET.dieta %}checked{% endif %}>
+        <input type="checkbox" id="dieta_{{ dieta.id }}" name="dieta"
+               value="{{ dieta.id }}"
+               {% if dieta.id|stringformat:"s" in dietas_seleccionadas %}checked{% endif %}>
         <label for="dieta_{{ dieta.id }}">{{ dieta.nombre }}</label><br>
         {% endfor %}
     </fieldset>
@@ -140,39 +147,69 @@
         {% for libre_alimento in libres_alimentos %}
         <input type="checkbox" id="libre_alimento_{{ libre_alimento.id }}" name="libre_alimento"
                value="{{ libre_alimento.id }}"
-               {% if libre_alimento.id|stringformat:"s" in request.GET.libre_alimento %}checked{% endif %}>
+               {% if libre_alimento.id|stringformat:"s" in alimentos_libres_seleccionados %}checked{% endif %}>
         <label for="libre_alimento_{{ libre_alimento.id }}">{{ libre_alimento.nombre }}</label><br>
         {% endfor %}
     </fieldset>
 
-    <button type="submit">Filtrar</button>
+    <div class="filtro-botones">
+        <button class="btn-home" type="submit">Filtrar</button>
+        <button class="btn-home-clear" type="button" onclick="clearFilters()">Limpiar</button>
+    </div>
 </form>
 
-<h2>Alimentos</h2>
-<div class="productos">
-
-    {% for a in productos %}
-
-    <div class="producto">
-        <div class="contenedor">
-            
-            {% if a.imagen %}
-            <a href="{% url 'detalle' a.id %}">
-                <img src="{{ a.imagen.url }}" alt="imagen alimento">
+<!-- Formulario para filtros de categoría -->
+<div class="advanced-search">
+    <form method="GET" class="filtro-categories">
+        <fieldset class="filtro-section filtro-fieldset-categorias">
+            <legend>Filtrar por categoría:</legend>
+            <a href="{% url 'home' %}{% if request.GET.dieta %}?dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
+                Todas las categorías
             </a>
-            {% endif %}
-        </div>
-
-        <div class="detalles">
-            <a href="{% url 'detalle' a.id %}">
-                <h2>{{ a.nombre_alimento | title }}</h2>
+            {% for categoria in categorias %}
+            <a href="{% url 'home' %}?categoria={{ categoria.id }}{% if request.GET.dieta %}&dieta={{ request.GET.dieta|join:'&dieta=' }}{% endif %}{% if request.GET.libre_alimento %}&libre_alimento={{ request.GET.libre_alimento|join:'&libre_alimento=' }}{% endif %}" class="categoria-link">
+                {{ categoria.nombre }}
             </a>
-            <h3>${{ a.precio | intcomma}}</h3>
-        </div>
+            {% endfor %}
+        </fieldset>
+    </form>
     </div>
-
-    {% endfor %}
-
+<div class="productos-contenedor">
+    <h2 class="titulo-producto">Productos <i class="fa-solid fa-utensils"></i></h2>
+    <div class="productos row">
+        {% for a in productos %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if a.imagen %}
+                <a href="{% url 'detalle' a.id %}">
+                    <img src="{{ a.imagen.url }}" class="card-img-top" alt="imagen alimento">
+                </a>
+                {% endif %}
+                <div class="card-body">
+                    <a href="{% url 'detalle' a.id %}">
+                        <h5 class="card-title">{{ a.nombre_alimento | title }}</h5>
+                    </a>
+                    <p class="card-text">${{ a.precio | intcomma }}</p>
+                </div>
+                <div class="card-info-icon">
+                    <a href="{% url 'detalle' a.id %}"><i class="fa-solid fa-circle-info"></i></a> 
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
+<div>
+    {% include 'app/paginator.html' %}
+</div>
+<script>
+    function clearFilters() {
+        // Obtén la URL base (sin parámetros)
+        const baseUrl = window.location.pathname;
+    
+        // Redirige a la URL base sin parámetros
+        window.location.href = baseUrl;
+    }
+</script>
 
-{% endblock %}
+{% endblock contenido %}

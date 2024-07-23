@@ -19,37 +19,63 @@ from paypalrestsdk import Payment
 def index(request):
     return render(request, 'app/index.html')
 
+
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 @login_required
 def home(request):
-    categorias = CategoriaAlimento.objects.all()  # Obtener todas las categorías
-    dietas = Dieta.objects.all()  # Obtener todas las dietas
-    libres_alimentos = LibreDeAlimento.objects.all()  # Obtener todos los alimentos libres
+    categorias = CategoriaAlimento.objects.all()
+    dietas = Dieta.objects.all()
+    libres_alimentos = LibreDeAlimento.objects.all()
 
     productos = Alimento.objects.all()
 
     categoria_seleccionada = request.GET.get('categoria')
     dietas_seleccionadas = request.GET.getlist('dieta')
     alimentos_libres_seleccionados = request.GET.getlist('libre_alimento')
+    busqueda = request.GET.get('search')
 
+    if busqueda:
+        productos = productos.filter(nombre_alimento__icontains=busqueda)
     if categoria_seleccionada:
         productos = productos.filter(id_categoria=categoria_seleccionada)
 
     if dietas_seleccionadas:
         productos = productos.filter(alimentodieta__id_dieta__in=dietas_seleccionadas).distinct()
+        for dieta_id in dietas_seleccionadas:
+            productos = productos.filter(alimentodieta__id_dieta=dieta_id).distinct()
 
     if alimentos_libres_seleccionados:
         productos = productos.filter(alimentolibrede__id_libre__in=alimentos_libres_seleccionados).distinct()
+        for libre_id in alimentos_libres_seleccionados:
+            productos = productos.filter(alimentolibrede__id_libre=libre_id).distinct()
+
+    # Paginación
+    page = request.GET.get('page', 1)
+    paginator = Paginator(productos, 5)  # Mostrar 5 productos por página
+
+    try:
+        productos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        # Si la página no es un entero, mostrar la primera página.
+        productos_paginados = paginator.page(1)
+    except EmptyPage:
+        # Si la página está fuera de rango (por ejemplo, 9999), mostrar la última página de resultados.
+        productos_paginados = paginator.page(paginator.num_pages)
 
     data = {
-        'productos': productos,
+        'productos': productos_paginados,
         'categorias': categorias,
         'dietas': dietas,
         'libres_alimentos': libres_alimentos,
         'categoria_seleccionada': categoria_seleccionada,
         'dietas_seleccionadas': dietas_seleccionadas,
         'alimentos_libres_seleccionados': alimentos_libres_seleccionados,
+        'paginator': paginator
     }
     return render(request, 'app/home.html', data)
+
 @login_required
 def contacto(request):
     data = {
