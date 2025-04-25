@@ -11,7 +11,7 @@ Plataforma desarrollo/Plataforma implementación Windows 10, Visual Studio Code,
 
 URL: http://DiegoBMZurita.pythonanywhere.com
 
--Usuario administrador:tienda
+-Usuario administrador: tienda
 -Contraseña: adminadmin
 
 -Usuario común: diego
