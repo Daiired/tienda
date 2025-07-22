@@ -6,7 +6,7 @@ agregando alimentos al carrito y despues pagarlos por el servicio de la API de P
 
 Lenguajes utilizados Python,HTML,CSS,JavaScript y SQLite
 Frameworks utilizados Djando, Bootstrap
-Tecnolocias aplicadas HTML5, CSS, JavaScript, Bootstrap,Django,Crispy-Forms, SweetAlert, Chart.js, API de PayPal
+Tecnologias aplicadas HTML5, CSS, JavaScript, Bootstrap,Django,Crispy-Forms, SweetAlert, Chart.js, API de PayPal
 Plataforma desarrollo/Plataforma implementación Windows 10, Visual Studio Code, SQLite, PythonAnyWhere
 
 URL: http://DiegoBMZurita.pythonanywhere.com
